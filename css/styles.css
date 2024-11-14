@@ -223,7 +223,7 @@ position: relative;
 }
 
 .courses h2 {
-    margin: 2rem;
+    margin: 1rem;
 }
 
 .coursecontainer div {
@@ -253,7 +253,7 @@ position: relative;
 }
 
 .course2 {
-    background-image: url(../images/course_citrix_cloud2.png);
+    background-image: url(../images/course_workspaces.jpeg);
     background-position: center;
 
 }
@@ -269,6 +269,42 @@ position: relative;
 
 }
 .course3 .text3 {
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    padding: 1rem;
+   
+}
+.course4 {
+    background-image: url(../images/course_appstream2.png);
+    background-position: center;
+
+}
+.course4 .text4 {
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    padding: 1rem;
+
+    
+}
+.course5 {
+    background-image: url(../images/course_abgtpyfo.jpeg);
+    background-position: center;
+
+}
+.course5 .text5 {
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    padding: 1rem;
+
+    
+}
+
+.course6 {
+    background-image: url(../images/course_appstream2.png);
+    background-position: center;
+
+}
+.course6 .text6 {
     background-color: rgba(0,0,0,0.5);
     width: 100%;
     padding: 1rem;
@@ -472,7 +508,7 @@ DESKTOP HEADER SETUP
 
     }
 
-    div .course3:hover, .course2:hover, .course1:hover {
+    div .course3:hover, .course2:hover, .course1:hover, .course5:hover, .course6:hover, .course4:hover   {
         transform: scale(1.1);
     }
 
@@ -507,7 +543,7 @@ DESKTOP HEADER SETUP
     }
     .courses {
         height: 100vh;
-        line-height: 5rem;
+        
     }
     .coursecontainer {
         display: flex;
@@ -523,7 +559,7 @@ DESKTOP HEADER SETUP
     
     }
 
-    .course1, .course2, .course3 {
+    .course1, .course2, .course3, .course4, .course5, .course6 {
         flex-basis: 29%;
        
     }
