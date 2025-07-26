@@ -65,10 +65,10 @@ console.log('MoC Ready Sunshine')
         }, stepTime);
     }
     
-    animateValue("stat1", 16500, 17065, 3000);
-    animateValue("stat2", 50, 137, 3000);
-    animateValue("stat3", 1500, 1815, 3000);
-    animateValue("stat4", 2049, 2406, 0);
+    animateValue("stat1", 17000, 18231, 3000);
+    animateValue("stat2", 100, 143, 3000);
+    animateValue("stat3", 800, 885, 3000);
+    animateValue("stat4", 9000, 10164, 0);
 
     // This is the basic code for the waypoint jquery library which simply converts elements from ishidden to isactive depending
     // on how far the users have scrolled down the page (modified by offset). Transitions and timings are modified by css.
