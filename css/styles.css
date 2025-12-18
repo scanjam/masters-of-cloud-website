@@ -497,19 +497,36 @@ DESKTOP HEADER SETUP
         display: none;
     }
 
-    a:hover {
-        box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.4);
-
+    /* Improved hover effects */
+    nav a:hover {
+        color: #FC7307;
+        transition: color 0.3s ease;
     }
 
     .social i:hover {
         transform: scale(1.2);
-        
-
+        transition: transform 0.3s ease;
+        color: #FC7307;
     }
 
-    div .course3:hover, .course2:hover, .course1:hover, .course5:hover, .course6:hover, .course4:hover   {
-        transform: scale(1.1);
+    /* Course hover effects */
+    .course1:hover, .course2:hover, .course3:hover, .course4:hover, .course5:hover, .course6:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        cursor: pointer;
+    }
+
+    /* Add smooth transitions to course cards */
+    .course1, .course2, .course3, .course4, .course5, .course6 {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* JavaScript-controlled hover class for better performance */
+    .course-hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.4) !important;
+        z-index: 10;
     }
 
     .header {

@@ -2,6 +2,18 @@
 $(document).ready(function(event) { 
 console.log('MoC Ready Sunshine')
 
+    // Improved hover effects for course cards
+    $('.coursecontainer div').hover(
+        function() {
+            // Mouse enter
+            $(this).addClass('course-hover');
+        },
+        function() {
+            // Mouse leave
+            $(this).removeClass('course-hover');
+        }
+    );
+
     //This is the Code to expand the NAV on click (show or hide)
     $('nav i').on('click', function(){
         console.log('nav i - clicked')
@@ -24,27 +36,23 @@ console.log('MoC Ready Sunshine')
         }, 500);
     });
     
-    //This is the code to create the background image slideshow
-    var index = 2;
+    //Improved background image slideshow with better performance
+    var slideIndex = 1;
+    var totalSlides = $('.slides > div').length;
+    
     function cycleImages() {
-        $('.slide-active').removeClass('slide-active');
-        // if index == 2
-        if (index < 3) {
-            // set background image
-            $('.slides > div:nth-child(' + index + ')').addClass('slide-active');
-            // increment index by 1
-            index++;
-        } else {
-            // set background image
-            $('.slides > div:nth-child(' + index + ')').addClass('slide-active');
-            // reset index to 0
-            index = 1;
-        }
+        // Remove active class from all slides
+        $('.slides > div').removeClass('slide-active');
+        
+        // Add active class to current slide
+        $('.slides > div:nth-child(' + slideIndex + ')').addClass('slide-active');
+        
+        // Increment index, reset to 1 if at end
+        slideIndex = slideIndex >= totalSlides ? 1 : slideIndex + 1;
     }
 
-    setInterval(function() {
-        cycleImages();
-    }, 5000);
+    // Use requestAnimationFrame for better performance
+    var slideInterval = setInterval(cycleImages, 5000);
     
 
 
