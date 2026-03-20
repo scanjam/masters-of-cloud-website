@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EUC Flash Cards - Masters of Cloud</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, rgb(31,44,88) 0%, #1e3a8a 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #FC7307 0%, #ff8c42 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(252, 115, 7, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 115, 7, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .mode-btn {
+            min-width: 150px;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            color: rgb(31,44,88);
+        }
+
+        .flashcard {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .flashcard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .flashcard.flipped .front {
+            display: none;
+        }
+
+        .flashcard.flipped .back {
+            display: block;
+        }
+
+        .back {
+            display: none;
+        }
+
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .quiz-option.selected {
+            background: rgba(252, 115, 7, 0.3);
+            border-color: #FC7307;
+        }
+
+        .quiz-option.correct {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: #22c55e;
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-score {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .question, .answer {
+            font-size: 1.3rem;
+            line-height: 1.6;
+        }
+
+        .question {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .answer {
+            color: #e2e8f0;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(252, 115, 7, 0.8);
+            padding: 0.3rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #FC7307 0%, #ff8c42 100%);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .flashcard {
+                padding: 2rem;
+                min-height: 250px;
+            }
+
+            .question, .answer {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> EUC Quiz</h1>
+            <p>Master End User Computing with 50 comprehensive questions</p>
+        </div>
+
+        <div class="mode-selector">
+            <button class="btn mode-btn active" id="flashcard-mode" onclick="setMode('flashcard')">
+                <i class="fas fa-clone"></i> Flash Cards
+            </button>
+            <button class="btn mode-btn" id="quiz-mode" onclick="setMode('quiz')">
+                <i class="fas fa-list-ul"></i> Multiple Choice
+            </button>
+        </div>
+
+        <div class="progress">
+            <div>Card <span id="current-card">1</span> of <span id="total-cards">50</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="controls" id="flashcard-controls">
+            <button class="btn" id="prev-btn" onclick="previousCard()">
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <button class="btn" id="shuffle-btn" onclick="shuffleCards()">
+                <i class="fas fa-random"></i> Shuffle
+            </button>
+            <button class="btn" id="next-btn" onclick="nextCard()">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="controls" id="quiz-controls" style="display: none;">
+            <button class="btn" id="quiz-prev-btn" onclick="previousQuizQuestion()">
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <button class="btn" id="quiz-shuffle-btn" onclick="shuffleQuiz()">
+                <i class="fas fa-random"></i> Shuffle
+            </button>
+            <button class="btn" id="quiz-next-btn" onclick="nextQuizQuestion()">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="btn" id="quiz-reset-btn" onclick="resetQuiz()">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+        </div>
+
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="card-number" id="card-number">1/50</div>
+            <div class="front">
+                <div class="question" id="question"></div>
+                <div class="flip-hint">
+                    <i class="fas fa-hand-pointer"></i> Click to reveal answer
+                </div>
+            </div>
+            <div class="back">
+                <div class="answer" id="answer"></div>
+                <div class="flip-hint">
+                    <i class="fas fa-hand-pointer"></i> Click to show question
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-container" id="quiz-container">
+            <div class="card-number" id="quiz-card-number">1/50</div>
+            <div class="quiz-score" id="quiz-score">Score: 0/0</div>
+            <div class="quiz-question" id="quiz-question"></div>
+            <div class="quiz-options" id="quiz-options"></div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        const flashcards = [
+            {
+                question: "What does EUC stand for in the context of cloud computing?",
+                answer: "End User Computing - refers to technologies that enable end users to access applications and desktops remotely through various devices.",
+                options: ["Enterprise User Computing", "End User Computing", "Extended User Computing", "Elastic User Computing"],
+                correct: 1
+            },
+            {
+                question: "What is Amazon WorkSpaces?",
+                answer: "Amazon WorkSpaces is a managed, secure Desktop-as-a-Service (DaaS) solution that allows users to provision Windows or Linux desktops in the cloud.",
+                options: ["A file storage service", "A managed Desktop-as-a-Service solution", "A container orchestration service", "A database service"],
+                correct: 1
+            },
+            {
+                question: "What is Amazon AppStream 2.0?",
+                answer: "Amazon AppStream 2.0 is a fully managed application streaming service that allows users to stream desktop applications from AWS to any device running a web browser.",
+                options: ["A video streaming service", "An application streaming service", "A data streaming service", "A live streaming service"],
+                correct: 1
+            },
+            {
+                question: "What are the main differences between WorkSpaces and AppStream 2.0?",
+                answer: "WorkSpaces provides full virtual desktops, while AppStream 2.0 streams individual applications. WorkSpaces is persistent, AppStream 2.0 can be non-persistent.",
+                options: ["WorkSpaces is cheaper than AppStream 2.0", "WorkSpaces provides full desktops, AppStream 2.0 streams applications", "WorkSpaces is for mobile only", "There are no differences"],
+                correct: 1
+            },
+            {
+                question: "What is a WorkSpaces bundle?",
+                answer: "A WorkSpaces bundle is a combination of an operating system, compute resources (CPU, memory), storage, and software that defines the WorkSpace configuration.",
+                options: ["A collection of applications", "A combination of OS, compute resources, and storage", "A network configuration", "A security policy"],
+                correct: 1
+            }
+        ];
+
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        let currentMode = 'flashcard';
+        let quizAnswers = [];
+        let quizScore = 0;
+
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update mode buttons
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(mode + '-mode').classList.add('active');
+            
+            // Show/hide appropriate containers and controls
+            if (mode === 'flashcard') {
+                document.getElementById('flashcard').style.display = 'flex';
+                document.getElementById('quiz-container').classList.remove('active');
+                document.getElementById('flashcard-controls').style.display = 'flex';
+                document.getElementById('quiz-controls').style.display = 'none';
+                updateCard();
+            } else {
+                document.getElementById('flashcard').style.display = 'none';
+                document.getElementById('quiz-container').classList.add('active');
+                document.getElementById('flashcard-controls').style.display = 'none';
+                document.getElementById('quiz-controls').style.display = 'flex';
+                updateQuiz();
+            }
+        }
+
+        function updateCard() {
+            const card = flashcards[currentCardIndex];
+            document.getElementById('question').textContent = card.question;
+            document.getElementById('answer').textContent = card.answer;
+            document.getElementById('current-card').textContent = currentCardIndex + 1;
+            document.getElementById('card-number').textContent = `${currentCardIndex + 1}/5`;
+            
+            // Update progress bar
+            const progress = ((currentCardIndex + 1) / flashcards.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            // Reset flip state
+            isFlipped = false;
+            document.getElementById('flashcard').classList.remove('flipped');
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentCardIndex === 0;
+            document.getElementById('next-btn').disabled = currentCardIndex === flashcards.length - 1;
+        }
+
+        function updateQuiz() {
+            const card = flashcards[currentCardIndex];
+            document.getElementById('quiz-question').textContent = card.question;
+            document.getElementById('current-card').textContent = currentCardIndex + 1;
+            document.getElementById('quiz-card-number').textContent = `${currentCardIndex + 1}/5`;
+            
+            // Update progress bar
+            const progress = ((currentCardIndex + 1) / flashcards.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            // Update score
+            document.getElementById('quiz-score').textContent = `Score: ${quizScore}/${quizAnswers.length}`;
+            
+            // Create options
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            card.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Show previous answer if exists
+            if (quizAnswers[currentCardIndex] !== undefined) {
+                showQuizResult(quizAnswers[currentCardIndex]);
+            } else {
+                document.getElementById('quiz-feedback').classList.remove('show');
+            }
+            
+            // Update button states
+            document.getElementById('quiz-prev-btn').disabled = currentCardIndex === 0;
+            document.getElementById('quiz-next-btn').disabled = currentCardIndex === flashcards.length - 1;
+        }
+
+        function selectOption(selectedIndex) {
+            const card = flashcards[currentCardIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // Clear previous selections
+            options.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Mark selected option
+            options[selectedIndex].classList.add('selected');
+            
+            // Store answer
+            quizAnswers[currentCardIndex] = selectedIndex;
+            
+            // Show result after a short delay
+            setTimeout(() => {
+                showQuizResult(selectedIndex);
+            }, 300);
+        }
+
+        function showQuizResult(selectedIndex) {
+            const card = flashcards[currentCardIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById('quiz-feedback');
+            
+            // Mark correct answer
+            options[card.correct].classList.add('correct');
+            
+            // Mark incorrect answer if different from correct
+            if (selectedIndex !== card.correct) {
+                options[selectedIndex].classList.add('incorrect');
+            }
+            
+            // Update score
+            const wasCorrect = selectedIndex === card.correct;
+            if (wasCorrect && quizAnswers.filter((answer, index) => index <= currentCardIndex && answer === flashcards[index].correct).length > quizScore) {
+                quizScore++;
+            }
+            
+            // Show feedback
+            feedback.innerHTML = `
+                <strong>${wasCorrect ? 'Correct!' : 'Incorrect'}</strong><br>
+                ${card.answer}
+            `;
+            feedback.classList.add('show');
+            
+            // Update score display
+            document.getElementById('quiz-score').textContent = `Score: ${quizScore}/${Math.max(1, quizAnswers.length)}`;
+        }
+
+        function flipCard() {
+            if (currentMode !== 'flashcard') return;
+            
+            isFlipped = !isFlipped;
+            const flashcard = document.getElementById('flashcard');
+            if (isFlipped) {
+                flashcard.classList.add('flipped');
+            } else {
+                flashcard.classList.remove('flipped');
+            }
+        }
+
+        function nextCard() {
+            if (currentCardIndex < flashcards.length - 1) {
+                currentCardIndex++;
+                if (currentMode === 'flashcard') {
+                    updateCard();
+                } else {
+                    updateQuiz();
+                }
+            }
+        }
+
+        function previousCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                if (currentMode === 'flashcard') {
+                    updateCard();
+                } else {
+                    updateQuiz();
+                }
+            }
+        }
+
+        function nextQuizQuestion() {
+            nextCard();
+        }
+
+        function previousQuizQuestion() {
+            previousCard();
+        }
+
+        function shuffleCards() {
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            if (currentMode === 'flashcard') {
+                updateCard();
+            } else {
+                resetQuiz();
+            }
+        }
+
+        function shuffleQuiz() {
+            shuffleCards();
+        }
+
+        function resetQuiz() {
+            quizAnswers = [];
+            quizScore = 0;
+            currentCardIndex = 0;
+            updateQuiz();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            switch(event.key) {
+                case 'ArrowLeft':
+                    previousCard();
+                    break;
+                case 'ArrowRight':
+                    nextCard();
+                    break;
+                case ' ':
+                case 'Enter':
+                    event.preventDefault();
+                    if (currentMode === 'flashcard') {
+                        flipCard();
+                    }
+                    break;
+            }
+        });
+
+        // Initialize
+        document.getElementById('total-cards').textContent = flashcards.length;
+        updateCard();
+    </script>
+</body>
+</html>

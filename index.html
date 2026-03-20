@@ -203,5 +203,16 @@
         <script src="./js/zenscroll-min.js"></script>
         <script src="./js/jquery.waypoints.min.js"></script>
         <script src="./js/app.js"></script>
+        <script>
+            // Add scrolled class to header for enhanced styling
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('.header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        </script>
     </body>
 </html>
