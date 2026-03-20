@@ -25,7 +25,12 @@ html {
 .header {
     /* width: 95%; */
     margin: 0 auto;
-
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
 }
 
 i {
@@ -181,6 +186,7 @@ h2 {
 .backgroundimage {
 height: 90vh;
 position: relative;
+padding-top: 10rem;
 }
 
 .intro {   
@@ -770,11 +776,17 @@ DESKTOP HEADER SETUP
         display: flex;
         justify-content: space-around;
         align-content: center;
-    
     }
 
     .header {
-            background-color: rgba(31,44,88,.1)
+        background-color: rgba(31,44,88,0.85);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+
+    .header.scrolled {
+        background-color: rgba(31,44,88,0.98);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.5);
     }
 
     .header img {
