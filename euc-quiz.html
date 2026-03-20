@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EUC Quiz - Masters of Cloud</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        /* Reset and override conflicting styles */
+        .quiz-page {
+            background: linear-gradient(135deg, rgb(31,44,88) 0%, #1e3a8a 100%);
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .quiz-main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .quiz-title {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .quiz-title h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .quiz-title p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .mode-toggle button {
+            background: linear-gradient(135deg, #FC7307 0%, #ff8c42 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(252, 115, 7, 0.3);
+            min-width: 160px;
+        }
+
+        .mode-toggle button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 115, 7, 0.4);
+        }
+
+        .mode-toggle button.active {
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            color: rgb(31,44,88);
+        }
+
+        .quiz-progress-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .quiz-progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 10px;
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            background: linear-gradient(135deg, #FC7307 0%, #ff8c42 100%);
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quiz-nav-buttons button {
+            background: linear-gradient(135deg, #FC7307 0%, #ff8c42 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(252, 115, 7, 0.3);
+        }
+
+        .quiz-nav-buttons button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(252, 115, 7, 0.4);
+        }
+
+        .quiz-nav-buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card-display {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            min-height: 350px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .flashcard-mode .card-display {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .card-display:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(252, 115, 7, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .card-question {
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.6;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .card-answer {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+            display: none;
+        }
+
+        .card-answer.show {
+            display: block;
+        }
+
+        .flip-instruction {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .quiz-mode-container {
+            display: none;
+        }
+
+        .quiz-mode-container.active {
+            display: block;
+        }
+
+        .quiz-score-display {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .quiz-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-choice {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.8rem;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .quiz-choice:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateX(5px);
+        }
+
+        .quiz-choice.selected {
+            background: rgba(252, 115, 7, 0.3);
+            border-color: #FC7307;
+        }
+
+        .quiz-choice.correct {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: #22c55e;
+        }
+
+        .quiz-choice.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+
+        .quiz-explanation {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            background: rgba(255, 255, 255, 0.15);
+            display: none;
+            line-height: 1.6;
+        }
+
+        .quiz-explanation.show {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .quiz-main {
+                padding: 0.5rem;
+            }
+
+            .quiz-title h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .quiz-title p {
+                font-size: 0.9rem;
+            }
+
+            .mode-toggle {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .mode-toggle button {
+                width: 100%;
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+                min-width: auto;
+            }
+
+            .quiz-progress-section {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            #question-count {
+                width: 100%;
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+
+            .quiz-nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .quiz-nav-buttons button {
+                width: 100%;
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+                min-height: 44px;
+            }
+
+            .card-display {
+                padding: 1.5rem;
+                min-height: 250px;
+            }
+
+            .card-badge {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .card-question {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-answer {
+                font-size: 0.95rem;
+            }
+
+            .quiz-choice {
+                padding: 0.8rem 1rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
+
+            .quiz-score-display {
+                font-size: 1rem;
+            }
+
+            .flip-instruction {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 768px) and (min-width: 481px) {
+            .quiz-main {
+                padding: 0.8rem;
+            }
+
+            .quiz-title h1 {
+                font-size: 2rem;
+            }
+
+            .quiz-title p {
+                font-size: 1rem;
+            }
+
+            .mode-toggle {
+                gap: 0.8rem;
+            }
+
+            .mode-toggle button {
+                padding: 0.9rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            .quiz-progress-section {
+                padding: 1.2rem;
+                font-size: 1rem;
+            }
+
+            #question-count {
+                padding: 0.7rem;
+                font-size: 0.95rem;
+            }
+
+            .quiz-nav-buttons {
+                gap: 0.8rem;
+            }
+
+            .quiz-nav-buttons button {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
+
+            .card-display {
+                padding: 2rem;
+                min-height: 300px;
+            }
+
+            .card-question {
+                font-size: 1.1rem;
+            }
+
+            .card-answer {
+                font-size: 1rem;
+            }
+
+            .quiz-choice {
+                padding: 0.9rem 1.2rem;
+                font-size: 1rem;
+                min-height: 44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quiz-main {
+                padding: 1rem;
+            }
+
+            .quiz-title h1 {
+                font-size: 2rem;
+            }
+
+            .card-display {
+                padding: 2rem;
+                min-height: 280px;
+            }
+
+            .card-question {
+                font-size: 1.2rem;
+            }
+
+            .card-answer {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img id="test" src="https://www.mastersof.cloud/images/logo_white_transparent.svg" alt="masters of cloud logo">
+        <nav role="navigation" aria-label="Main navigation">
+            <i class="fas fa-bars"></i>
+            <ul role="menubar">
+                <li role="none"><a href="index.html" role="menuitem">Home</a></li>
+                <li role="none"><a href="index.html#courses" role="menuitem">Courses</a></li>
+                <li role="none"><a href="index.html#resources" role="menuitem">Resources</a></li>
+                <li role="none"><a href="./euc-quiz.html" role="menuitem">EUC Quiz</a></li>
+                <li role="none"><a href="index.html#contact" role="menuitem">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="quiz-page">
+        <div class="quiz-main">
+            <div class="quiz-title">
+                <h1><i class="fas fa-graduation-cap"></i> EUC Quiz</h1>
+                <p>Master End User Computing with 50 comprehensive questions</p>
+            </div>
+
+            <div class="mode-toggle">
+                <button class="active" id="flashcard-btn" onclick="switchMode('flashcard')">
+                    <i class="fas fa-clone"></i> Flash Cards
+                </button>
+                <button id="quiz-btn" onclick="switchMode('quiz')">
+                    <i class="fas fa-list-ul"></i> Multiple Choice
+                </button>
+            </div>
+
+            <div class="quiz-progress-section">
+                <div style="margin-bottom: 1rem;">
+                    <label for="question-count" style="margin-right: 1rem;">Number of questions:</label>
+                    <select id="question-count" onchange="updateQuestionCount()" style="padding: 0.5rem; border-radius: 0.5rem; font-size: 1rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                        <option value="5">5 questions</option>
+                        <option value="10">10 questions</option>
+                        <option value="15">15 questions</option>
+                        <option value="20">20 questions</option>
+                        <option value="25">25 questions</option>
+                        <option value="50" selected>All 50 questions</option>
+                    </select>
+                </div>
+                <div>Question <span id="current-num">1</span> of <span id="total-num">50</span></div>
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="quiz-nav-buttons">
+                <button id="prev-button" onclick="goToPrevious()">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <button id="shuffle-button" onclick="shuffleAll()">
+                    <i class="fas fa-random"></i> Shuffle
+                </button>
+                <button id="next-button" onclick="goToNext()">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                <button id="reset-button" onclick="resetAll()" style="display: none;">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+
+            <!-- Flashcard Mode -->
+            <div id="flashcard-container" class="flashcard-mode">
+                <div class="card-display" id="flashcard" onclick="flipTheCard()">
+                    <div class="card-badge" id="card-badge">1/50</div>
+                    <div id="card-front">
+                        <div class="card-question" id="fc-question"></div>
+                        <div class="flip-instruction">
+                            <i class="fas fa-hand-pointer"></i> Click to reveal answer
+                        </div>
+                    </div>
+                    <div id="card-back" style="display: none;">
+                        <div class="card-answer show" id="fc-answer"></div>
+                        <div class="flip-instruction">
+                            <i class="fas fa-hand-pointer"></i> Click to show question
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Mode -->
+            <div id="quiz-container" class="quiz-mode-container">
+                <div class="card-display">
+                    <div class="card-badge" id="quiz-badge">1/50</div>
+                    <div class="quiz-score-display" id="score-display">Score: 0/0</div>
+                    <div class="card-question" id="quiz-question"></div>
+                    <div class="quiz-choices" id="quiz-choices"></div>
+                    <div class="quiz-explanation" id="quiz-explanation"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h2>Get in Touch!</h2>
+        <div class="social">
+            <a id="contact"></a>
+            <a href="javascript:" id="return-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+            <ul class="active">
+                <li><a href="https://www.facebook.com/mastersofcloud/" target="_blank"><i class="fab fa-facebook"></i></a></li>
+                <li><a href="https://twitter.com/mastersofcloud1" target="_blank"><i class="fab fa-twitter-square"></i></a></li>
+                <li><a href="https://www.linkedin.com/company/masters-of-cloud" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+                <li><a href="mailto:training@mastersof.cloud"><i class="fas fa-envelope-square"></i></a></li>
+            </ul>
+        </div>
+        <p>&copy; Copyright Masters of Cloud 2026. All Rights Reserved. | v26.0.2</p>
+    </div>
+
+    <script src="./js/jquery.js"></script>
+    <script src="./js/zenscroll-min.js"></script>
+    <script src="./js/jquery.waypoints.min.js"></script>
+    <script src="./js/app.js"></script>
+    <script>
+        const questions = [
+            {
+                q: "What does EUC stand for in the context of cloud computing?",
+                a: "End User Computing - refers to technologies that enable end users to access applications and desktops remotely through various devices.",
+                choices: ["Enterprise User Computing", "End User Computing", "Extended User Computing", "Elastic User Computing"],
+                correct: 1
+            },
+            {
+                q: "What is Amazon WorkSpaces?",
+                a: "Amazon WorkSpaces is a managed, secure Desktop-as-a-Service (DaaS) solution that allows users to provision Windows or Linux desktops in the cloud.",
+                choices: ["A file storage service", "A managed Desktop-as-a-Service solution", "A container orchestration service", "A database service"],
+                correct: 1
+            },
+            {
+                q: "What is Amazon AppStream 2.0?",
+                a: "Amazon AppStream 2.0 is a fully managed application streaming service that allows users to stream desktop applications from AWS to any device running a web browser.",
+                choices: ["A video streaming service", "An application streaming service", "A data streaming service", "A live streaming service"],
+                correct: 1
+            },
+            {
+                q: "What are the main differences between WorkSpaces and AppStream 2.0?",
+                a: "WorkSpaces provides full virtual desktops, while AppStream 2.0 streams individual applications. WorkSpaces is persistent, AppStream 2.0 can be non-persistent.",
+                choices: ["WorkSpaces is cheaper", "WorkSpaces provides full desktops, AppStream streams apps", "WorkSpaces is for mobile only", "No differences"],
+                correct: 1
+            },
+            {
+                q: "What is a WorkSpaces bundle?",
+                a: "A WorkSpaces bundle is a combination of an operating system, compute resources (CPU, memory), storage, and software that defines the WorkSpace configuration.",
+                choices: ["A collection of applications", "A combination of OS, compute resources, and storage", "A network configuration", "A security policy"],
+                correct: 1
+            },
+            {
+                q: "What are the different WorkSpaces bundle types available?",
+                a: "Value, Standard, Performance, Power, PowerPro, and Graphics bundles, each offering different levels of CPU, memory, and storage resources.",
+                choices: ["Basic, Standard, Premium", "Small, Medium, Large", "Value, Standard, Performance, Power, PowerPro, Graphics", "Micro, Mini, Pro"],
+                correct: 2
+            },
+            {
+                q: "What is WorkSpaces Web?",
+                a: "Amazon WorkSpaces Web is a low-cost, fully managed WorkSpace built specifically to facilitate secure, web-based workloads and accessing internal websites.",
+                choices: ["A web browser extension", "A low-cost web-based WorkSpace service", "A website hosting service", "A web development platform"],
+                correct: 1
+            },
+            {
+                q: "What protocols does WorkSpaces use for connection?",
+                a: "WorkSpaces uses PCoIP (PC-over-IP) protocol by default, and also supports WorkSpaces Streaming Protocol (WSP) for newer bundles.",
+                choices: ["RDP and VNC", "PCoIP and WSP", "SSH and Telnet", "HTTP and HTTPS"],
+                correct: 1
+            },
+            {
+                q: "What is an AppStream 2.0 fleet?",
+                a: "A fleet is a group of streaming instances that run your applications. Fleets define the instance type, capacity, and configuration for application streaming.",
+                choices: ["A collection of applications", "A group of streaming instances", "A network configuration", "A user group"],
+                correct: 1
+            },
+            {
+                q: "What is an AppStream 2.0 stack?",
+                a: "A stack consists of a fleet, user access policies, and storage configurations. Users are assigned to stacks to access applications.",
+                choices: ["A collection of fleets with policies and storage", "A single application instance", "A network stack", "A storage configuration"],
+                correct: 0
+            },
+            {
+                q: "What are the two types of AppStream 2.0 fleets?",
+                a: "Always-On fleets (instances run continuously) and On-Demand fleets (instances start when users connect and stop when sessions end).",
+                choices: ["Public and Private", "Always-On and On-Demand", "Standard and Premium", "Shared and Dedicated"],
+                correct: 1
+            },
+            {
+                q: "What is the difference between persistent and non-persistent storage in AppStream 2.0?",
+                a: "Persistent storage saves user data between sessions (Home Folders, Google Drive), while non-persistent storage is temporary and lost when sessions end.",
+                choices: ["Persistent is faster", "Persistent saves data between sessions", "Persistent is more secure", "No difference"],
+                correct: 1
+            },
+            {
+                q: "What authentication methods are supported by WorkSpaces?",
+                a: "WorkSpaces supports AWS Directory Service (Simple AD, AD Connector, AWS Managed Microsoft AD), and can integrate with on-premises Active Directory.",
+                choices: ["Only AWS IAM", "AWS Directory Service and on-premises AD", "Only LDAP", "Only SAML"],
+                correct: 1
+            },
+            {
+                q: "What is AWS Directory Service?",
+                a: "AWS Directory Service provides multiple ways to use Microsoft Active Directory with AWS services, including Simple AD, AD Connector, and AWS Managed Microsoft AD.",
+                choices: ["A file directory service", "A service for using Active Directory with AWS", "A DNS service", "A user management service"],
+                correct: 1
+            },
+            {
+                q: "What is Simple AD?",
+                a: "Simple AD is a standalone managed directory powered by Samba 4, compatible with Microsoft Active Directory for basic directory features.",
+                choices: ["A simplified Active Directory", "A standalone managed directory powered by Samba 4", "A basic LDAP service", "A user authentication service"],
+                correct: 1
+            },
+            {
+                q: "What is AD Connector?",
+                a: "AD Connector is a directory gateway that redirects directory requests to your on-premises Microsoft Active Directory without caching information in the cloud.",
+                choices: ["A VPN connection", "A directory gateway to on-premises AD", "A file connector", "A network bridge"],
+                correct: 1
+            },
+            {
+                q: "What is AWS Managed Microsoft AD?",
+                a: "AWS Managed Microsoft AD is a fully managed Microsoft Active Directory in the AWS Cloud, powered by Windows Server 2012 R2.",
+                choices: ["A managed LDAP service", "A fully managed Microsoft AD in AWS", "A user management service", "A DNS service"],
+                correct: 1
+            },
+            {
+                q: "What are WorkSpaces IP Access Control Groups?",
+                a: "IP Access Control Groups act as a virtual firewall that controls IP addresses from which users are allowed to access their WorkSpaces.",
+                choices: ["Network routing rules", "Virtual firewall for IP access control", "Load balancing rules", "DNS configuration"],
+                correct: 1
+            },
+            {
+                q: "What is WorkSpaces Application Manager (WAM)?",
+                a: "WAM is a service that simplifies deployment and management of applications for WorkSpaces by packaging applications into virtualized application containers.",
+                choices: ["A web application manager", "A service for deploying applications to WorkSpaces", "A database manager", "A file manager"],
+                correct: 1
+            },
+            {
+                q: "What file systems are supported by WorkSpaces?",
+                a: "WorkSpaces supports local storage on the instance and can integrate with Amazon FSx for Windows File Server and Amazon FSx for Lustre.",
+                choices: ["Only local storage", "Local storage and Amazon FSx", "Only network storage", "Only cloud storage"],
+                correct: 1
+            },
+            {
+                q: "What is the maximum number of WorkSpaces per directory?",
+                a: "You can have up to 500 WorkSpaces per directory by default, but this limit can be increased by contacting AWS Support.",
+                choices: ["100", "250", "500", "1000"],
+                correct: 2
+            },
+            {
+                q: "What are the different running modes for WorkSpaces?",
+                a: "AlwaysOn (WorkSpace runs continuously) and AutoStop (WorkSpace stops after a specified period of inactivity to save costs).",
+                choices: ["AlwaysOn and AutoStop", "Continuous and Scheduled", "Active and Inactive", "Running and Stopped"],
+                correct: 0
+            },
+            {
+                q: "What is WorkSpaces Personal?",
+                a: "WorkSpaces Personal is a cost-effective solution for individual users who need a persistent virtual desktop with dedicated resources.",
+                choices: ["A personal cloud storage", "A cost-effective persistent virtual desktop", "A mobile app", "A web browser"],
+                correct: 1
+            },
+            {
+                q: "What is WorkSpaces Pools?",
+                a: "WorkSpaces Pools provides non-persistent virtual desktops that are assigned to users from a shared pool, reducing costs for task-based workers.",
+                choices: ["A storage pool", "Non-persistent virtual desktops from a shared pool", "A user group", "A network pool"],
+                correct: 1
+            },
+            {
+                q: "What image types can be used with AppStream 2.0?",
+                a: "Base images (provided by AWS), custom images (created from base images with your applications), and shared images (shared across AWS accounts).",
+                choices: ["Only base images", "Base, custom, and shared images", "Only custom images", "Only shared images"],
+                correct: 1
+            },
+            {
+                q: "What is AppStream 2.0 Image Builder?",
+                a: "Image Builder is a virtual machine used to create, customize, and test your AppStream 2.0 images before deploying them to fleets.",
+                choices: ["A container builder", "A VM for creating AppStream images", "A code builder", "A network builder"],
+                correct: 1
+            },
+            {
+                q: "What are AppStream 2.0 User Pools?",
+                a: "User Pools allow you to create and manage user identities directly within AppStream 2.0, without requiring an external directory service.",
+                choices: ["A storage pool", "A service for managing user identities in AppStream", "A network pool", "A compute pool"],
+                correct: 1
+            },
+            {
+                q: "What is SAML 2.0 integration in AppStream 2.0?",
+                a: "SAML 2.0 integration allows users to access AppStream 2.0 applications using their existing corporate credentials through identity providers like ADFS or Okta.",
+                choices: ["A security protocol", "Integration for using corporate credentials", "A network protocol", "A storage protocol"],
+                correct: 1
+            },
+            {
+                q: "What are the supported instance families for WorkSpaces?",
+                a: "WorkSpaces supports various instance families including t2, t3, m4, m5, c4, c5, r4, r5, and specialized graphics instances like g3 and g4dn.",
+                choices: ["Only t2 and t3", "t2, t3, m4, m5, c4, c5, r4, r5, g3, g4dn", "Only graphics instances", "Only compute optimized"],
+                correct: 1
+            },
+            {
+                q: "What is WorkSpaces Secure Browser?",
+                a: "WorkSpaces Secure Browser is a web browser specifically designed for secure access to internal websites and web applications from WorkSpaces.",
+                choices: ["A regular web browser", "A secure browser for internal websites", "A mobile browser", "A development browser"],
+                correct: 1
+            },
+            {
+                q: "What are the network requirements for WorkSpaces?",
+                a: "WorkSpaces requires specific ports (4172 for PCoIP, 4195 for WSP) and can work with NAT gateways, but direct internet access provides better performance.",
+                choices: ["Only port 80 and 443", "Ports 4172 and 4195", "Only port 22", "Any available ports"],
+                correct: 1
+            },
+            {
+                q: "What is the difference between root volume and user volume in WorkSpaces?",
+                a: "Root volume contains the OS and applications (encrypted by default), while user volume contains user data and can be encrypted separately.",
+                choices: ["No difference", "Root has OS/apps, user has data", "Root is faster", "Root is larger"],
+                correct: 1
+            },
+            {
+                q: "What are AppStream 2.0 session scripts?",
+                a: "Session scripts are PowerShell scripts that run when users start or end streaming sessions, allowing customization of the user environment.",
+                choices: ["JavaScript scripts", "PowerShell scripts for session customization", "Python scripts", "Bash scripts"],
+                correct: 1
+            },
+            {
+                q: "What is Dynamic Application Framework in AppStream 2.0?",
+                a: "Dynamic Application Framework allows applications to be installed and launched dynamically during streaming sessions without pre-installing them on the image.",
+                choices: ["A static framework", "A framework for dynamic app installation", "A web framework", "A mobile framework"],
+                correct: 1
+            },
+            {
+                q: "What are the different storage options for AppStream 2.0 users?",
+                a: "Home Folders (persistent network storage), Google Drive for Work, OneDrive for Business, and temporary local storage during sessions.",
+                choices: ["Only local storage", "Home Folders, Google Drive, OneDrive, local storage", "Only cloud storage", "Only network storage"],
+                correct: 1
+            },
+            {
+                q: "What is WorkSpaces Core?",
+                a: "WorkSpaces Core is a fully managed virtual desktop infrastructure (VDI) service that provides the underlying infrastructure for third-party VDI management software.",
+                choices: ["The main WorkSpaces service", "Infrastructure for third-party VDI software", "A core application", "A management tool"],
+                correct: 1
+            },
+            {
+                q: "What are the monitoring capabilities for WorkSpaces?",
+                a: "CloudWatch metrics, CloudTrail for API logging, WorkSpaces reports for usage analytics, and integration with AWS Config for compliance monitoring.",
+                choices: ["Only CloudWatch", "CloudWatch, CloudTrail, WorkSpaces reports, AWS Config", "Only basic logging", "No monitoring"],
+                correct: 1
+            },
+            {
+                q: "What is AppStream 2.0 fleet auto scaling?",
+                a: "Auto scaling automatically adjusts the number of running instances in a fleet based on user demand, optimizing costs and ensuring availability.",
+                choices: ["Manual scaling only", "Automatic adjustment based on demand", "Fixed scaling", "No scaling available"],
+                correct: 1
+            },
+            {
+                q: "What are the security features of WorkSpaces?",
+                a: "Encryption at rest and in transit, MFA support, IP access control, integration with AWS security services, and compliance with various standards (SOC, PCI DSS, HIPAA).",
+                choices: ["Basic password protection", "Comprehensive security including encryption, MFA, compliance", "Only network security", "No security features"],
+                correct: 1
+            },
+            {
+                q: "What is the WorkSpaces client application?",
+                a: "The WorkSpaces client is available for Windows, macOS, Linux, iOS, Android, and Chromebook, providing access to virtual desktops from various devices.",
+                choices: ["Only web browser", "Multi-platform client for various devices", "Only mobile app", "Only desktop app"],
+                correct: 1
+            },
+            {
+                q: "What are AppStream 2.0 application entitlements?",
+                a: "Application entitlements control which applications users can access within a stack, allowing granular control over application access permissions.",
+                choices: ["User permissions", "Controls for application access within stacks", "Network permissions", "Storage permissions"],
+                correct: 1
+            },
+            {
+                q: "What is WorkSpaces migration?",
+                a: "WorkSpaces migration involves moving user data, applications, and configurations from on-premises desktops or other VDI solutions to AWS WorkSpaces.",
+                choices: ["Moving to different regions", "Moving from on-premises to AWS WorkSpaces", "Moving between accounts", "Moving applications only"],
+                correct: 1
+            },
+            {
+                q: "What are the backup and restore capabilities for WorkSpaces?",
+                a: "WorkSpaces supports automatic snapshots of root and user volumes, manual snapshots, and the ability to restore WorkSpaces from snapshots.",
+                choices: ["No backup available", "Automatic and manual snapshots with restore", "Only manual backup", "Only automatic backup"],
+                correct: 1
+            },
+            {
+                q: "What is AppStream 2.0 usage reporting?",
+                a: "Usage reporting provides detailed analytics on user sessions, application usage, fleet utilization, and costs to help optimize your AppStream 2.0 deployment.",
+                choices: ["Basic usage logs", "Detailed analytics for optimization", "No reporting available", "Only cost reporting"],
+                correct: 1
+            },
+            {
+                q: "What are the best practices for WorkSpaces performance optimization?",
+                a: "Choose appropriate bundle types, optimize network connectivity, use local caching, implement proper image management, and monitor performance metrics regularly.",
+                choices: ["Use the largest bundles", "Comprehensive optimization including bundles, network, caching", "Only network optimization", "No optimization needed"],
+                correct: 1
+            },
+            {
+                q: "What is the difference between shared and dedicated tenancy in WorkSpaces?",
+                a: "Shared tenancy runs WorkSpaces on shared hardware (default), while dedicated tenancy runs WorkSpaces on dedicated hardware for compliance requirements.",
+                choices: ["No difference", "Shared uses shared hardware, dedicated uses dedicated hardware", "Shared is faster", "Dedicated is cheaper"],
+                correct: 1
+            },
+            {
+                q: "What are AppStream 2.0 fleet management best practices?",
+                a: "Use appropriate instance types, implement auto scaling, optimize images, monitor performance, manage user sessions effectively, and implement proper security controls.",
+                choices: ["Use largest instances", "Comprehensive management including scaling, optimization, security", "Only monitor performance", "No management needed"],
+                correct: 1
+            },
+            {
+                q: "What is WorkSpaces pricing model?",
+                a: "WorkSpaces offers monthly and hourly pricing models. Monthly provides unlimited usage, while hourly charges for actual usage time with a small monthly base fee.",
+                choices: ["Only monthly pricing", "Monthly and hourly pricing models", "Only hourly pricing", "Pay per user"],
+                correct: 1
+            },
+            {
+                q: "What are the disaster recovery options for EUC services?",
+                a: "Multi-AZ deployments, cross-region replication of images and snapshots, automated backup strategies, and documented recovery procedures for business continuity.",
+                choices: ["No disaster recovery", "Comprehensive DR including multi-AZ, replication, backups", "Only local backups", "Only manual recovery"],
+                correct: 1
+            },
+            {
+                q: "What integration options exist between WorkSpaces and AppStream 2.0?",
+                a: "Both services can share the same directory service, use similar networking configurations, and can be managed through the same AWS console for unified EUC management.",
+                choices: ["No integration possible", "Shared directory, networking, and management console", "Only network integration", "Only management integration"],
+                correct: 1
+            }
+        ];
+
+        let currentIndex = 0;
+        let mode = 'flashcard';
+        let isFlipped = false;
+        let userAnswers = [];
+        let score = 0;
+        let activeQuestions = questions;
+        let questionCount = 50;
+
+        function updateQuestionCount() {
+            questionCount = parseInt(document.getElementById('question-count').value);
+            activeQuestions = questions.slice(0, questionCount);
+            currentIndex = 0;
+            userAnswers = [];
+            score = 0;
+            document.getElementById('total-num').textContent = questionCount;
+            mode === 'flashcard' ? renderFlashcard() : renderQuiz();
+        }
+
+        function switchMode(newMode) {
+            mode = newMode;
+            
+            document.querySelectorAll('.mode-toggle button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(newMode + '-btn').classList.add('active');
+            
+            if (newMode === 'flashcard') {
+                document.getElementById('flashcard-container').style.display = 'block';
+                document.getElementById('quiz-container').classList.remove('active');
+                document.getElementById('reset-button').style.display = 'none';
+                renderFlashcard();
+            } else {
+                document.getElementById('flashcard-container').style.display = 'none';
+                document.getElementById('quiz-container').classList.add('active');
+                document.getElementById('reset-button').style.display = 'inline-block';
+                renderQuiz();
+            }
+        }
+
+        function renderFlashcard() {
+            const q = activeQuestions[currentIndex];
+            document.getElementById('fc-question').textContent = q.q;
+            document.getElementById('fc-answer').textContent = q.a;
+            document.getElementById('card-badge').textContent = `${currentIndex + 1}/${activeQuestions.length}`;
+            document.getElementById('current-num').textContent = currentIndex + 1;
+            
+            isFlipped = false;
+            document.getElementById('card-front').style.display = 'block';
+            document.getElementById('card-back').style.display = 'none';
+            
+            updateProgress();
+            updateButtons();
+        }
+
+        function renderQuiz() {
+            const q = activeQuestions[currentIndex];
+            document.getElementById('quiz-question').textContent = q.q;
+            document.getElementById('quiz-badge').textContent = `${currentIndex + 1}/${activeQuestions.length}`;
+            document.getElementById('current-num').textContent = currentIndex + 1;
+            
+            const choicesContainer = document.getElementById('quiz-choices');
+            choicesContainer.innerHTML = '';
+            
+            q.choices.forEach((choice, idx) => {
+                const div = document.createElement('div');
+                div.className = 'quiz-choice';
+                div.textContent = choice;
+                div.onclick = () => selectAnswer(idx);
+                choicesContainer.appendChild(div);
+            });
+            
+            if (userAnswers[currentIndex] !== undefined) {
+                showAnswer(userAnswers[currentIndex]);
+            } else {
+                document.getElementById('quiz-explanation').classList.remove('show');
+            }
+            
+            updateScore();
+            updateProgress();
+            updateButtons();
+        }
+
+        function flipTheCard() {
+            if (mode !== 'flashcard') return;
+            
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                document.getElementById('card-front').style.display = 'none';
+                document.getElementById('card-back').style.display = 'block';
+            } else {
+                document.getElementById('card-front').style.display = 'block';
+                document.getElementById('card-back').style.display = 'none';
+            }
+        }
+
+        function selectAnswer(selectedIdx) {
+            const q = activeQuestions[currentIndex];
+            const choices = document.querySelectorAll('.quiz-choice');
+            
+            choices.forEach(choice => {
+                choice.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            choices[selectedIdx].classList.add('selected');
+            userAnswers[currentIndex] = selectedIdx;
+            
+            setTimeout(() => {
+                showAnswer(selectedIdx);
+            }, 300);
+        }
+
+        function showAnswer(selectedIdx) {
+            const q = activeQuestions[currentIndex];
+            const choices = document.querySelectorAll('.quiz-choice');
+            const explanation = document.getElementById('quiz-explanation');
+            
+            choices[q.correct].classList.add('correct');
+            
+            if (selectedIdx !== q.correct) {
+                choices[selectedIdx].classList.add('incorrect');
+            }
+            
+            const isCorrect = selectedIdx === q.correct;
+            explanation.innerHTML = `<strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br><br>${q.a}`;
+            explanation.classList.add('show');
+            
+            updateScore();
+        }
+
+        function updateScore() {
+            const answered = userAnswers.filter(a => a !== undefined).length;
+            const correct = userAnswers.filter((a, i) => a === activeQuestions[i].correct).length;
+            document.getElementById('score-display').textContent = `Score: ${correct}/${answered}`;
+        }
+
+        function updateProgress() {
+            const progress = ((currentIndex + 1) / activeQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            document.getElementById('prev-button').disabled = currentIndex === 0;
+            document.getElementById('next-button').disabled = currentIndex === activeQuestions.length - 1;
+        }
+
+        function goToNext() {
+            if (currentIndex < activeQuestions.length - 1) {
+                currentIndex++;
+                mode === 'flashcard' ? renderFlashcard() : renderQuiz();
+            }
+        }
+
+        function goToPrevious() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                mode === 'flashcard' ? renderFlashcard() : renderQuiz();
+            }
+        }
+
+        function shuffleAll() {
+            for (let i = activeQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [activeQuestions[i], activeQuestions[j]] = [activeQuestions[j], activeQuestions[i]];
+            }
+            currentIndex = 0;
+            if (mode === 'quiz') {
+                userAnswers = [];
+                score = 0;
+            }
+            mode === 'flashcard' ? renderFlashcard() : renderQuiz();
+        }
+
+        function resetAll() {
+            userAnswers = [];
+            score = 0;
+            currentIndex = 0;
+            renderQuiz();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') goToPrevious();
+            if (e.key === 'ArrowRight') goToNext();
+            if ((e.key === ' ' || e.key === 'Enter') && mode === 'flashcard') {
+                e.preventDefault();
+                flipTheCard();
+            }
+        });
+
+        document.getElementById('total-num').textContent = activeQuestions.length;
+        renderFlashcard();
+    </script>
+</body>
+</html>
