@@ -214,102 +214,167 @@ position: relative;
     max-width: 100%;
     height: 100vh;
     line-height: 2rem;
-
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, rgba(31,44,88,0.05) 0%, rgba(0,0,0,0.02) 100%);
 }
+
 .courses p {
     max-width: 75%;
     margin: 0 auto;
-
+    font-size: 1.8rem;
+    opacity: 0.9;
 }
 
 .courses h2 {
-    margin: 1rem;
+    margin: 1rem 0 3rem 0;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    padding: 0.5rem 0;
 }
 
 .coursecontainer div {
-    height: 15rem;
+    height: 18rem;
     width: 75%;
     margin: 2rem auto;
-    border-radius: 2rem;
+    border-radius: 1.5rem;
     background-repeat: no-repeat;
     background-size: cover;
     text-align: left;
-
-    
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+.coursecontainer div:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.coursecontainer div::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(31,44,88,0.02) 0%, rgba(0,0,0,0.08) 100%);
+    transition: opacity 0.3s ease;
+}
+
+.coursecontainer div:hover::before {
+    opacity: 0.4;
+}
+
 .coursecontainer h3 {
     font-size: 2rem;
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
+
+.coursecontainer p {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.95;
+}
+
 .course1 {
-    background-image: url(../images/course_citrix_netscaler.png);
-    /* background-position: center;*/
+    background-image: linear-gradient(135deg, rgba(31,44,88,0.05) 0%, rgba(0,0,0,0.1) 100%), url(../images/course_citrix_netscaler.png);
+    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
+
 .course1 .text1 {
-    background-color: rgba(255,255,255,0.8);
+    background: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(248,250,252,0.88) 100%);
+    backdrop-filter: blur(8px);
     width: 100%;
-    padding: 1rem;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 0 1.5rem 1.5rem;
 }
 
 .course2 {
-    background-image: url(../images/course_workspaces.jpeg);
+    background-image: linear-gradient(135deg, rgba(31,44,88,0.08) 0%, rgba(0,0,0,0.12) 100%), url(../images/course_workspaces.jpeg);
     background-position: center;
-
 }
+
 .course2 .text2 {
-    background-color: rgba(0,0,0,0.7);
+    background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(31,44,88,0.7) 100%);
+    backdrop-filter: blur(8px);
     width: 100%;
-    padding: 1rem;
-    
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 0 1.5rem 1.5rem;
 }
+
 .course3 {
-    background-image: url(../images/course_appstream2.png);
+    background-image: linear-gradient(135deg, rgba(31,44,88,0.08) 0%, rgba(0,0,0,0.12) 100%), url(../images/course_appstream2.png);
     background-position: center;
-
 }
+
 .course3 .text3 {
-    background-color: rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(31,44,88,0.7) 100%);
+    backdrop-filter: blur(8px);
     width: 100%;
-    padding: 1rem;
-   
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 0 1.5rem 1.5rem;
 }
+
 .course4 {
-    background-image: url(../images/course_appstream2.png);
+    background-image: linear-gradient(135deg, rgba(31,44,88,0.08) 0%, rgba(0,0,0,0.12) 100%), url(../images/course_appstream2.png);
     background-position: center;
-
 }
+
 .course4 .text4 {
-    background-color: rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(31,44,88,0.7) 100%);
+    backdrop-filter: blur(8px);
     width: 100%;
-    padding: 1rem;
-
-    
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 0 1.5rem 1.5rem;
 }
+
 .course5 {
-    background-image: url(../images/course_abgtpyfo.jpeg);
+    background-image: linear-gradient(135deg, rgba(31,44,88,0.08) 0%, rgba(0,0,0,0.12) 100%), url(../images/course_abgtpyfo.jpeg);
     background-position: center;
-
 }
-.course5 .text5 {
-    background-color: rgba(0,0,0,0.5);
-    width: 100%;
-    padding: 1rem;
 
-    
+.course5 .text5 {
+    background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(31,44,88,0.7) 100%);
+    backdrop-filter: blur(8px);
+    width: 100%;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 0 1.5rem 1.5rem;
 }
 
 .course6 {
-    background-image: url(../images/course_appstream2.png);
+    background-image: linear-gradient(135deg, rgba(31,44,88,0.08) 0%, rgba(0,0,0,0.12) 100%), url(../images/course_appstream2.png);
     background-position: center;
-
 }
-.course6 .text6 {
-    background-color: rgba(0,0,0,0.5);
-    width: 100%;
-    padding: 1rem;
 
-    
+.course6 .text6 {
+    background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(31,44,88,0.7) 100%);
+    backdrop-filter: blur(8px);
+    width: 100%;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 0 1.5rem 1.5rem;
 }
 
 
@@ -346,26 +411,55 @@ justify-content: space-around;
 .rescontainer {
     /* width: 95%; */
     height: 100%;
-    padding: 1rem;
+    padding: 4rem 2rem;
     margin: 0 auto;
-    background-color: rgba(31,44,88,0.8);
+    background-color: rgba(31,44,88,0.85);
     border-radius: 2rem;
-
+    backdrop-filter: blur(10px);
 }
 
-.rescontainer li {
-    font-size: 2rem;
-    text-decoration: none;
+.rescontainer h2 {
+    margin-bottom: 3rem;
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.resource-list {
     list-style: none;
-
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
-.rescontainer h3 {
-    color: yellow;
+.resource-list li {
+    font-size: 1.8rem;
+    text-decoration: none;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.resource-list li:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
 .rescontainer a {
-    color: yellow;
+    color: #FC7307;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.rescontainer a:hover {
+    color: #ff8c42;
+    text-decoration: underline;
 }
 
 .footer {
@@ -445,6 +539,167 @@ ul {
 }
 
 /* ******************
+MOBILE SETUP (Small phones)
+*******************/
+
+@media screen and (max-width: 480px) {
+    html {
+        font-size: 50%;
+    }
+
+    i {
+        font-size: 1.5rem;
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    .header img {
+        height: 6rem;
+        width: 12rem;
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    nav .fas {
+        display: block;
+        font-size: 2rem;
+    }
+
+    .coursecontainer div {
+        width: 90%;
+        height: 12rem;
+        padding: 1rem;
+    }
+
+    .coursecontainer h3 {
+        font-size: 1.1rem;
+    }
+
+    .coursecontainer p {
+        font-size: 0.9rem;
+    }
+
+    .statistics {
+        flex-direction: column;
+        font-size: 1rem;
+        height: auto;
+        padding: 1rem;
+    }
+
+    .stat {
+        padding: 1rem 0;
+    }
+
+    .statcounter {
+        font-size: 1.5rem;
+    }
+
+    .rescontainer {
+        padding: 1rem;
+    }
+
+    .rescontainer li {
+        font-size: 1rem;
+    }
+
+    .social i {
+        font-size: 2rem;
+    }
+
+    .courses > p {
+        font-size: 1rem;
+        max-width: 90%;
+    }
+
+    .intro {
+        height: 20vh;
+    }
+}
+
+/* ******************
+TABLET SETUP (Medium phones)
+*******************/
+
+@media screen and (max-width: 768px) and (min-width: 481px) {
+    html {
+        font-size: 56%;
+    }
+
+    i {
+        font-size: 1.8rem;
+        padding: 1.2rem;
+    }
+
+    h1 {
+        font-size: 3rem;
+        padding: 1.2rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    .header img {
+        height: 8rem;
+        width: 16rem;
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    nav .fas {
+        display: block;
+    }
+
+    .coursecontainer {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
+    }
+
+    .coursecontainer div {
+        width: 95%;
+        height: 14rem;
+        margin: 1rem auto;
+    }
+
+    .statistics {
+        flex-direction: column;
+        font-size: 1.2rem;
+        height: auto;
+        padding: 1.5rem;
+    }
+
+    .stat {
+        padding: 1rem 0;
+    }
+
+    .courses > p {
+        font-size: 1.2rem;
+        max-width: 95%;
+    }
+
+    .intro {
+        height: 25vh;
+    }
+}
+
+/* ******************
 DESKTOP HEADER SETUP
 *******************/
 
@@ -509,25 +764,7 @@ DESKTOP HEADER SETUP
         color: #FC7307;
     }
 
-    /* Course hover effects */
-    .course1:hover, .course2:hover, .course3:hover, .course4:hover, .course5:hover, .course6:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        cursor: pointer;
-    }
-
-    /* Add smooth transitions to course cards */
-    .course1, .course2, .course3, .course4, .course5, .course6 {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    /* JavaScript-controlled hover class for better performance */
-    .course-hover {
-        transform: scale(1.05) !important;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.4) !important;
-        z-index: 10;
-    }
+    /* Course cards now have integrated hover effects */
 
     .header {
         display: flex;
@@ -567,25 +804,64 @@ DESKTOP HEADER SETUP
         height: 40vh;
         justify-content: space-between;
         align-items: center;
-    
+        gap: 2rem;
+        padding: 0 2rem;
     }
-    .coursecontainer div {
-        margin: 0 auto;
-        align-content: space-between;
-        height: 30rem;
     
+    .coursecontainer div {
+        margin: 0;
+        align-content: space-between;
+        height: 32rem;
+        flex-basis: 29%;
+        min-width: 280px;
+    }
+
+    .coursecontainer div:hover {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     }
 
     .course1, .course2, .course3, .course4, .course5, .course6 {
-        flex-basis: 29%;
-       
+        position: relative;
+    }
+
+    .coursecontainer h3 {
+        font-size: 2.2rem;
+        margin: 0 0 1.5rem 0;
+    }
+
+    .coursecontainer p {
+        font-size: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .course1 .text1, .course2 .text2, .course3 .text3, 
+    .course4 .text4, .course5 .text5, .course6 .text6 {
+        padding: 2.5rem;
     }
 
     .resources {
         background-image: url(../images/bkgnd_cloudservice.jpg);
         background-attachment: fixed;
         background-color: rgba(1,1,1,1);
+    }
 
+    .rescontainer {
+        padding: 5rem 4rem;
+    }
+
+    .rescontainer h2 {
+        font-size: 4rem;
+        margin-bottom: 4rem;
+    }
+
+    .resource-list {
+        gap: 2.5rem;
+    }
+
+    .resource-list li {
+        font-size: 2rem;
+        padding: 2rem 2.5rem;
     } 
  
 
